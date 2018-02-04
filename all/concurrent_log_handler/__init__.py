@@ -52,6 +52,7 @@ This module supports Python 2.6 and later.
 
 """
 
+import pwd, grp, stat
 import os
 import sys
 import pwd, grp
@@ -238,6 +239,17 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
 
         self._do_chown_and_chmod(self.baseFilename)
 
+        # Set file permission
+        rotated_file_name = '%s.1%s' % (self.baseFilename, '.gz' if self.use_gzip else '')
+        if os.path.exists(rotated_file_name):
+            currMode = os.stat(rotated_file_name).st_mode
+            os.chmod(self.baseFilename, currMode)
+
+            # Set file owner
+            uid = os.stat(rotated_file_name).st_uid
+            gid = os.stat(rotated_file_name).st_gid
+            os.chown(self.baseFilename, uid, gid)
+
         return stream
 
     def _close(self):
@@ -420,6 +432,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
             try:
                 # Do a rename test to determine if we can successfully rename the log file
                 os.rename(self.baseFilename, tmpname)
+
                 if self.use_gzip:
                     self.do_gzip(tmpname)
             except (IOError, OSError):

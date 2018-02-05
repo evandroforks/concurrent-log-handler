@@ -162,7 +162,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         the RotatingFileHandler is used by another.
         """
         self.stream = None
-        # Absolute file name handling done by FileHandler since Python 2.5  
+        # Absolute file name handling done by FileHandler since Python 2.5
         super(ConcurrentRotatingFileHandler, self).__init__(
             filename, mode, encoding=encoding, delay=delay)
         self.delay = delay
@@ -221,7 +221,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         """
         Open the current base file with the (original) mode and encoding.
         Return the resulting stream.
-        
+
         Note:  Copied from stdlib.  Added option to override 'mode'
         """
         if mode is None:
@@ -390,7 +390,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
                     os.rename(source_fn, dest_fn)
 
             # Q: Is there some way to protect this code from a KeyboardInterrupt?
-            # This isn't necessarily a data loss issue, but it certainly does 
+            # This isn't necessarily a data loss issue, but it certainly does
             # break the rotation process during stress testing.
 
             # There is currently no mechanism in place to handle the situation

@@ -58,7 +58,7 @@ import traceback
 from logging import LogRecord
 from logging.handlers import BaseRotatingHandler
 
-from concurrent_log_handler.portalocker import LOCK_EX, LOCK_NB, LockException, lock, unlock
+from portalocker import LOCK_EX, LOCK_NB, LockException, lock, unlock
 
 try:
     import codecs

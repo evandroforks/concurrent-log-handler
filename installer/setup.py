@@ -291,6 +291,10 @@ setup(name='concurrent-log-handler',
       author_email="planders@gmail.com",
       packages=['concurrent_log_handler'],
       package_dir={'': 'src', },
+      install_requires=[
+          'pypiwin32',
+          'portalocker',
+      ],
       # These aren't needed by the end user and shouldn't be installed to the Python root.
       # data_files=[
       #     ('tests', ["stresstest.py"]),

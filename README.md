@@ -126,14 +126,18 @@ https://github.com/wcooley
 ## Sublime Text Dependency
 
 To use this as a Package Control Dependency https://packagecontrol.io/docs/dependencies create
-this file on the root of your Package:
+this `dependencies.json` file on the root of your Package:
 ```json
 {
+    "windows": {
+        ">3000": [
+            "python-pywin32"
+        ]
+    },
     "*": {
         "*": [
-            "ConcurrentLogHandler",
             "PortalockerFiles",
-            "python-pywin32"
+            "ConcurrentLogHandler"
         ]
     }
 }

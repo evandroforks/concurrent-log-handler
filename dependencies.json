@@ -1,8 +1,12 @@
 {
+    "windows": {
+        ">3000": [
+            "python-pywin32"
+        ]
+    },
     "*": {
         "*": [
-            "PortalockerFiles",
-            "python-pywin32"
+            "PortalockerFiles"
         ]
     }
 }

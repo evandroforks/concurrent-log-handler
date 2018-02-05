@@ -1,0 +1,8 @@
+{
+    "*": {
+        "*": [
+            "PortalockerFiles",
+            "python-pywin32"
+        ]
+    }
+}

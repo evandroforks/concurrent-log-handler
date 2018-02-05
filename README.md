@@ -123,3 +123,21 @@ https://github.com/Preston-Landers
 https://github.com/und3rc
 
 https://github.com/wcooley
+
+
+## Sublime Text Dependency
+
+To use this as a Package Control Dependency https://packagecontrol.io/docs/dependencies create
+this file on the root of your Package:
+```json
+{
+    "*": {
+        "*": [
+            "ConcurrentLogHandler",
+            "PortalockerFiles",
+            "python-pywin32"
+        ]
+    }
+}
+```
+

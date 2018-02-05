@@ -35,11 +35,11 @@ You can download and install the package with `pip` using the following command:
 
 If installing from source, use the following command:
 
-    python setup.py install
+    python setup install
 
 To build a Python "wheel" for distribution, use the following:
 
-    python setup.py bdist_wheel
+    python setup bdist_wheel
     # Copy the .whl file from under the "dist" folder
 
 
@@ -97,7 +97,7 @@ restart your app service so that all processes are using the same settings at th
 - 0.9.5: Add `use_gzip` option to compress rotated logs. Add an optional threaded
 logging queue handler based on the standard library's `logging.QueueHandler`.
 
-- 0.9.4: Fix setup.py to not include tests in distribution.
+- 0.9.4: Fix setup to not include tests in distribution.
 
 - 0.9.3: Refactoring release
    * For publishing fork on pypi as `concurrent-log-handler` under new package name.

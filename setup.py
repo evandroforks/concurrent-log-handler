@@ -254,65 +254,70 @@ To-do
   by the parent logging class.
 """
 
-import sys
+try:
+    import sublime_api
 
-extra = {}
-if sys.version_info >= (3, 0):
-    extra['use_2to3'] = True
+except ImportError:
+    import sys
 
-from ez_setup import use_setuptools
+    extra = {}
+    if sys.version_info >= (3, 0):
+        extra['use_2to3'] = True
 
-use_setuptools()
+    from ez_setup import use_setuptools
 
-from setuptools import setup
+    use_setuptools()
 
-VERSION = "0.9.7"
-classifiers = """\
-Development Status :: 4 - Beta
-Topic :: System :: Logging
-Operating System :: POSIX
-Operating System :: Microsoft :: Windows
-Programming Language :: Python
-Programming Language :: Python :: 2.6
-Programming Language :: Python :: 2.7
-Programming Language :: Python :: 3
-Programming Language :: Python :: 3.5
-Programming Language :: Python :: 3.6
-Topic :: Software Development :: Libraries :: Python Modules
-License :: OSI Approved :: Apache Software License
-"""
-doc = __doc__.splitlines()
+    from setuptools import setup
 
-setup(name='concurrent-log-handler',
-      version=VERSION,
-      author="Preston Landers",
-      author_email="planders@gmail.com",
-      packages=['concurrent_log_handler'],
-      package_dir={'': 'src', },
-      install_requires=[
-          'pypiwin32',
-          'portalocker',
-      ],
-      # These aren't needed by the end user and shouldn't be installed to the Python root.
-      # data_files=[
-      #     ('tests', ["stresstest.py"]),
-      #     ('docs', [
-      #         'README.md',
-      #         'LICENSE',
-      #     ]),
-      # ],
-      url="https://github.com/Preston-Landers/concurrent-log-handler",
-      license="http://www.apache.org/licenses/LICENSE-2.0",
-      description=doc.pop(0),
-      long_description="\n".join(doc),
-      # platforms=["nt", "posix"],
-      # install_requires=(["pywin32"] if "win" in sys.platform else []),
-      keywords="logging, windows, linux, unix, rotate, QueueHandler, QueueListener, portalocker",
-      classifiers=classifiers.splitlines(),
-      zip_safe=True,
-      # test_suite=unittest.TestSuite,
-      **extra
-      )
+    VERSION = "0.9.7"
+    classifiers = """\
+    Development Status :: 4 - Beta
+    Topic :: System :: Logging
+    Operating System :: POSIX
+    Operating System :: Microsoft :: Windows
+    Programming Language :: Python
+    Programming Language :: Python :: 2.6
+    Programming Language :: Python :: 2.7
+    Programming Language :: Python :: 3
+    Programming Language :: Python :: 3.5
+    Programming Language :: Python :: 3.6
+    Topic :: Software Development :: Libraries :: Python Modules
+    License :: OSI Approved :: Apache Software License
+    """
+    doc = __doc__.splitlines()
 
-# Development build:
-# python setup.py clean build sdist bdist_wheel
+    setup(name='concurrent-log-handler',
+          version=VERSION,
+          author="Preston Landers",
+          author_email="planders@gmail.com",
+          packages=['concurrent_log_handler'],
+          package_dir={'': 'src', },
+          install_requires=[
+              'pypiwin32',
+              'portalocker',
+          ],
+          # These aren't needed by the end user and shouldn't be installed to the Python root.
+          # data_files=[
+          #     ('tests', ["stresstest.py"]),
+          #     ('docs', [
+          #         'README.md',
+          #         'LICENSE',
+          #     ]),
+          # ],
+          url="https://github.com/Preston-Landers/concurrent-log-handler",
+          license="http://www.apache.org/licenses/LICENSE-2.0",
+          description=doc.pop(0),
+          long_description="\n".join(doc),
+          # platforms=["nt", "posix"],
+          # install_requires=(["pywin32"] if "win" in sys.platform else []),
+          keywords="logging, windows, linux, unix, rotate, QueueHandler, QueueListener, portalocker",
+          classifiers=classifiers.splitlines(),
+          zip_safe=True,
+          # test_suite=unittest.TestSuite,
+          **extra
+          )
+
+    # Development build:
+    # python setup.py clean build sdist bdist_wheel
+

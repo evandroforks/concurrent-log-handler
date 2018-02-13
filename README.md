@@ -35,11 +35,11 @@ You can download and install the package with `pip` using the following command:
 
 If installing from source, use the following command:
 
-    python setup install
+    python setup.py install
 
 To build a Python "wheel" for distribution, use the following:
 
-    python setup bdist_wheel
+    python setup.py bdist_wheel
     # Copy the .whl file from under the "dist" folder
 
 

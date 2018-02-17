@@ -133,7 +133,9 @@ this `dependencies.json` file on the root of your Package:
 {
     "windows": {
         ">3000": [
-            "python-pywin32"
+            "python-pywin32",
+            "PortalockerFiles",
+            "ConcurrentLogHandler"
         ]
     },
     "*": {

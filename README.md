@@ -124,6 +124,8 @@ https://github.com/und3rc
 
 https://github.com/wcooley
 
+https://github.com/greenfrog82
+
 
 ## Sublime Text Dependency
 
@@ -147,3 +149,8 @@ this `dependencies.json` file on the root of your Package:
 }
 ```
 
+
+## TODO ## 
+
+We should probably preserve existing owners and permissions on the
+log file when we roll it over.

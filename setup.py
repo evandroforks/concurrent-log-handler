@@ -20,9 +20,6 @@ recent versions of Python. It should be a drop-in replacement for users
 of the old version, except for changing the package name from
 `cloghandler` to `concurrent_log_handler`.
 
-Note: PyWin32 is required on Windows, but can't be installed as an
-automatic dependency because it's not currently installable through pip.
-
 Details
 =======
 .. _portalocker:  http://code.activestate.com/recipes/65203/
@@ -145,6 +142,9 @@ Example Python code: ``app.py``::
 
 Change Log
 ==========
+- 0.9.8: Fix for PyWin32 dependency specification (explicitly require PyWin32)
+    Ability to specify owner and permissions (mode) of rollover files [Unix only]
+
 - 0.9.7 / 0.9.6: Fix platform specifier for PyPi
 
 - 0.9.5: Add `use_gzip` option to compress rotated logs. Add an optional threaded

@@ -21,9 +21,9 @@ Summary of other changes:
 * Fix for deadlocking problem with recent versions of Python
 * More secure generation of random numbers for temporary filenames
 * Change the name of the lockfile to have .__ in front of it.
-* Provide a QueueListener / QueueHandler implementation for
-  handling log events in a background thread. Optional: requires Python 3.
-
+* Provide a QueueListener / QueueHandler implementation for 
+  handling log events in a background thread. Optional: requires Python 3. 
+* Allow setting owner and mode permissions of rollover file on Unix
 
 ## Instructions ##
 
@@ -57,7 +57,7 @@ Here is a simple usage example:
 
     log.info("Here is a very exciting log message, just for you")
 
-
+See also the file `src/example.py` for a configuration and usage example.
 
 To use this module from a logging config file, use a handler entry like this:
 
@@ -90,8 +90,12 @@ restart your app service so that all processes are using the same settings at th
 
 ## Change Log ##
 
-- 0.9.8: Fix for PyWin32 dependency specification (explicitly require PyWin32)
-    Ability to specify owner and permissions (mode) of rollover files [Unix only]
+- 0.9.8: Bug fixes and permission features
+   * Fix for issue #4 - AttributeError: 'NoneType' object has no attribute 'write'
+      This error could be caused if a rollover occurred inside a logging statement
+      that was generated from within another logging statement's format() call.
+   * Fix for PyWin32 dependency specification (explicitly require PyWin32)
+   * Ability to specify owner and permissions (mode) of rollover files [Unix only]   
 
 - 0.9.7/0.9.6: Fix platform specifier for PyPi
 
@@ -112,18 +116,6 @@ logging queue handler based on the standard library's `logging.QueueHandler`.
    * Puts `.__` prefix in front of lock file name
    * Use `secrets` or `SystemRandom` if available.
    * Add/fix Windows support
-
-## Contributors ##
-
-The following folks were kind enough to contribute to this fork:
-
-https://github.com/Preston-Landers
-
-https://github.com/und3rc
-
-https://github.com/wcooley
-
-https://github.com/greenfrog82
 
 
 ## Sublime Text Dependency
@@ -149,8 +141,15 @@ this `dependencies.json` file on the root of your Package:
 ```
 
 
-## TODO ##
+## Contributors ##
 
-We should probably preserve existing owners and permissions on the
-log file when we roll it over.
+The following folks were kind enough to contribute to this fork:
+
+https://github.com/Preston-Landers
+
+https://github.com/und3rc
+
+https://github.com/wcooley
+
+https://github.com/greenfrog82
 

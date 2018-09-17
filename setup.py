@@ -298,7 +298,7 @@ except ImportError:
           packages=['concurrent_log_handler'],
           package_dir={'': 'src', },
           install_requires=[
-              'pypiwin32',
+              'pypiwin32;platform_system=="Windows"',
               'portalocker',
           ],
           # These aren't needed by the end user and shouldn't be installed to the Python root.

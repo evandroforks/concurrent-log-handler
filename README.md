@@ -21,8 +21,8 @@ Summary of other changes:
 * Fix for deadlocking problem with recent versions of Python
 * More secure generation of random numbers for temporary filenames
 * Change the name of the lockfile to have .__ in front of it.
-* Provide a QueueListener / QueueHandler implementation for 
-  handling log events in a background thread. Optional: requires Python 3. 
+* Provide a QueueListener / QueueHandler implementation for
+  handling log events in a background thread. Optional: requires Python 3.
 * Allow setting owner and mode permissions of rollover file on Unix
 
 ## Instructions ##
@@ -95,7 +95,7 @@ restart your app service so that all processes are using the same settings at th
       This error could be caused if a rollover occurred inside a logging statement
       that was generated from within another logging statement's format() call.
    * Fix for PyWin32 dependency specification (explicitly require PyWin32)
-   * Ability to specify owner and permissions (mode) of rollover files [Unix only]   
+   * Ability to specify owner and permissions (mode) of rollover files [Unix only]
 
 - 0.9.7/0.9.6: Fix platform specifier for PyPi
 
@@ -139,13 +139,13 @@ this `dependencies.json` file on the root of your Package:
     "windows": {
         ">3000": [
             "python-pywin32",
-            "PortalockerFiles",
+            "portalockerfiles",
             "ConcurrentLogHandler"
         ]
     },
     "*": {
         "*": [
-            "PortalockerFiles",
+            "portalockerfiles",
             "ConcurrentLogHandler"
         ]
     }

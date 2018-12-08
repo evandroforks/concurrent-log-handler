@@ -7,7 +7,7 @@ safely write to the same log file concurrently. Rotated logs can be gzipped
 if desired. Both Windows and POSIX systems are supported.  An optional threaded
 queue logging handler is provided to perform logging in the background.
 
-This is a fork of Lowell Alleman's ConcurrentLogHandler 0.9.1 which fixes
+This is a fork of Lowell Alleman's concurrentloghandler 0.9.1 which fixes
 a hanging/deadlocking problem. See this:
 
 https://bugs.launchpad.net/python-concurrent-log-handler/+bug/1265150
@@ -111,7 +111,7 @@ logging queue handler based on the standard library's `logging.QueueHandler`.
    * Fix lock behavior / race condition
 
 - 0.9.2: Initial release of fork by Preston Landers based on a fork of Lowell Alleman's
-  ConcurrentLogHandler 0.9.1
+  concurrentloghandler 0.9.1
    * Fixes deadlocking issue with recent versions of Python
    * Puts `.__` prefix in front of lock file name
    * Use `secrets` or `SystemRandom` if available.
@@ -140,13 +140,13 @@ this `dependencies.json` file on the root of your Package:
         ">3000": [
             "python-pywin32",
             "portalockerfiles",
-            "ConcurrentLogHandler"
+            "concurrentloghandler"
         ]
     },
     "*": {
         "*": [
             "portalockerfiles",
-            "ConcurrentLogHandler"
+            "concurrentloghandler"
         ]
     }
 }

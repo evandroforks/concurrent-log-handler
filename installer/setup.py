@@ -264,10 +264,6 @@ extra = {}
 if sys.version_info >= (3, 0):
     extra['use_2to3'] = True
 
-from ez_setup import use_setuptools
-
-use_setuptools()
-
 from setuptools import setup
 
 VERSION = "0.9.8"
@@ -294,7 +290,7 @@ if "win" in sys.platform:
     except ImportError:
         # Only require pywin32 if not already installed
         # version 223 introduced ability to install from pip
-        install_requires.append("pywin32>=223")
+        install_requires.append("pypiwin32")
 
 setup(name='concurrent-log-handler',
       version=VERSION,

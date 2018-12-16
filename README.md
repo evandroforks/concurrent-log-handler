@@ -117,18 +117,6 @@ logging queue handler based on the standard library's `logging.QueueHandler`.
    * Use `secrets` or `SystemRandom` if available.
    * Add/fix Windows support
 
-## Contributors ##
-
-The following folks were kind enough to contribute to this fork:
-
-https://github.com/Preston-Landers
-
-https://github.com/und3rc
-
-https://github.com/wcooley
-
-https://github.com/greenfrog82
-
 
 ## Sublime Text Dependency
 
@@ -151,4 +139,17 @@ this `dependencies.json` file on the root of your Package:
     }
 }
 ```
+
+
+## Contributors ##
+
+The following folks were kind enough to contribute to this fork:
+
+https://github.com/Preston-Landers
+
+https://github.com/und3rc
+
+https://github.com/wcooley
+
+https://github.com/greenfrog82
 

@@ -287,7 +287,7 @@ License :: OSI Approved :: Apache Software License
 """
 doc = __doc__.splitlines()
 
-install_requires = []
+install_requires = ['portalocker']
 if "win" in sys.platform:
     try:
         import win32file
@@ -303,14 +303,14 @@ setup(name='concurrent-log-handler',
       packages=['concurrent_log_handler'],
       package_dir={'': 'src', },
       # These aren't needed by the end user and shouldn't be installed to the Python root.
-      # data_files=[
-      #     ("", ["LICENSE"]),
-      #     ('tests', ["stresstest.py"]),
-      #     ('docs', [
-      #         'README.md',
-      #         'LICENSE',
-      #     ]),
-      # ],
+      data_files=[
+          ("", ["LICENSE"]),
+          ('tests', ["stresstest.py"]),
+          ('docs', [
+              'README.md',
+              'LICENSE',
+          ]),
+      ],
       url="https://github.com/Preston-Landers/concurrent-log-handler",
       license="http://www.apache.org/licenses/LICENSE-2.0",
       description=doc.pop(0),

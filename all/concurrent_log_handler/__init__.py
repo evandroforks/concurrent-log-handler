@@ -163,9 +163,6 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         self.stream_lock = None
         self.owner = owner
         self.chmod = chmod
-        # Absolute file name handling done by FileHandler since Python 2.5  
-        super(ConcurrentRotatingFileHandler, self).__init__(
-            filename, mode, encoding=encoding, delay=delay)
         self._set_uid = None
         self._set_gid = None
         self.use_gzip = True if gzip and use_gzip else False
@@ -227,17 +224,6 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
             stream = codecs.open(self.baseFilename, mode, self.encoding)
 
         self._do_chown_and_chmod(self.baseFilename)
-
-        # Set file permission
-        rotated_file_name = '%s.1%s' % (self.baseFilename, '.gz' if self.use_gzip else '')
-        if os.path.exists(rotated_file_name):
-            currMode = os.stat(rotated_file_name).st_mode
-            os.chmod(self.baseFilename, currMode)
-
-            # Set file owner
-            uid = os.stat(rotated_file_name).st_uid
-            gid = os.stat(rotated_file_name).st_gid
-            os.chown(self.baseFilename, uid, gid)
 
         return stream
 

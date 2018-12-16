@@ -142,6 +142,16 @@ Example Python code: ``app.py``::
 
 Change Log
 ==========
+- 0.9.12: Add umask option (thanks to @blakehilliard)
+  This adds the ability to control the permission flags when creating log files.
+
+- 0.9.11: Fix issues with gzip compression option (use buffering)
+
+- 0.9.10: Fix inadvertent lock sharing when forking
+   Thanks to @eriktews for this fix
+
+- 0.9.9: Fix Python 2 compatibility broken in last release
+
 - 0.9.8: Bug fixes and permission features
    * Fix for issue #4 - AttributeError: 'NoneType' object has no attribute 'write'
       This error could be caused if a rollover occurred inside a logging statement
@@ -266,7 +276,7 @@ if sys.version_info >= (3, 0):
 
 from setuptools import setup
 
-VERSION = "0.9.8"
+VERSION = "0.9.12"
 classifiers = """\
 Development Status :: 4 - Beta
 Topic :: System :: Logging

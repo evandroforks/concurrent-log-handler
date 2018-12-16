@@ -56,10 +56,11 @@ import os
 import sys
 import time
 import traceback
+from contextlib import contextmanager
 from logging import LogRecord
 from logging.handlers import BaseRotatingHandler
 
-from portalocker import LOCK_EX, LOCK_NB, LockException, lock, unlock
+from concurrent_log_handler.portalocker import LOCK_EX, LOCK_NB, LockException, lock, unlock
 
 try:
     import codecs
@@ -75,7 +76,7 @@ except ImportError:
 # Random numbers for rotation temp file names, using secrets module if available (Python 3.6).
 # Otherwise use `random.SystemRandom` if available, then fall back on `random.Random`.
 try:
-    # noinspection PyPackageRequirements
+    # noinspection PyPackageRequirements,PyCompatibility
     from secrets import randbits
 except ImportError:
     import random
@@ -92,7 +93,7 @@ try:
 except ImportError:
     gzip = None
 
-__version__ = '0.9.8'
+__version__ = '0.9.12'
 __author__ = "Preston Landers <planders@gmail.com>"
 # __author__ = "Lowell Alleman"
 __all__ = [
@@ -119,7 +120,8 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
     """
 
     def __init__(self, filename, mode='a', maxBytes=0, backupCount=0,
-                 encoding=None, debug=False, delay=0, use_gzip=False, owner=None, chmod=None):
+                 encoding=None, debug=False, delay=0, use_gzip=False,
+                 owner=None, chmod=None, umask=None):
         """
         Open the specified file and use it as the stream for logging.
 
@@ -133,6 +135,10 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         :param use_gzip: automatically gzip rotated logs if available.
         :param owner: 2 element sequence with (user owner, group owner) of log files.  (Unix only)
         :param chmod: permission of log files.  (Unix only)
+        :param umask: umask settings to temporarily make when creating log files.
+            This is an alternative to chmod. It is mainly for Unix systems but
+            can also be used on Windows. The Windows security model is more complex
+            and this is not the same as changing access control entries.
 
         By default, the file grows indefinitely. You can specify particular
         values of maxBytes and backupCount to allow the file to rollover at
@@ -163,6 +169,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         self.stream_lock = None
         self.owner = owner
         self.chmod = chmod
+        self.umask = umask
         self._set_uid = None
         self._set_gid = None
         self.use_gzip = True if gzip and use_gzip else False
@@ -173,22 +180,28 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
 
         self._debug = debug
         self.use_gzip = True if gzip and use_gzip else False
+        self.gzip_buffer = 8096
 
         # Absolute file name handling done by FileHandler since Python 2.5
         super(ConcurrentRotatingFileHandler, self).__init__(
             filename, mode, encoding=encoding, delay=delay)
 
+        if not hasattr(self, "terminator"):
+            self.terminator = "\n"
+
         if owner and os.chown and pwd and grp:
             self._set_uid = pwd.getpwnam(self.owner[0]).pw_uid
             self._set_gid = grp.getgrnam(self.owner[1]).gr_gid
 
-        self._open_lockfile()
+        self.lockFilename = self.getLockFilename()
 
-    def _open_lockfile(self):
-        if self.stream_lock and not self.stream_lock.closed:
-            self._console_log("Lockfile already open in this process")
-            return
-        # Use 'file.lock' and not 'file.log.lock' (Only handles the normal "*.log" case.)
+    def getLockFilename(self):
+        """
+        Decide the lock filename. If the logfile is file.log, then we use `.__file.lock` and
+        not `file.log.lock`. This only removes the extension if it's `*.log`.
+
+        :return: the path to the lock file.
+        """
         if self.baseFilename.endswith(".log"):
             lock_file = self.baseFilename[:-4]
         else:
@@ -197,10 +210,18 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         lock_path, lock_name = os.path.split(lock_file)
         # hide the file on Unix and generally from file completion
         lock_name = ".__" + lock_name
-        lock_file = os.path.join(lock_path, lock_name)
+        return os.path.join(lock_path, lock_name)
+
+    def _open_lockfile(self):
+        if self.stream_lock and not self.stream_lock.closed:
+            self._console_log("Lockfile already open in this process")
+            return
+        lock_file = self.lockFilename
         self._console_log(
             "concurrent-log-handler %s opening %s" % (hash(self), lock_file), stack=False)
-        self.stream_lock = open(lock_file, "wb", buffering=0)
+
+        with self._alter_umask():
+            self.stream_lock = open(lock_file, "wb", buffering=0)
 
         self._do_chown_and_chmod(lock_file)
 
@@ -218,14 +239,28 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         """
         if mode is None:
             mode = self.mode
-        if self.encoding is None:
-            stream = open(self.baseFilename, mode)
-        else:
-            stream = codecs.open(self.baseFilename, mode, self.encoding)
+
+        with self._alter_umask():
+            if self.encoding is None:
+                stream = open(self.baseFilename, mode)
+            else:
+                stream = codecs.open(self.baseFilename, mode, self.encoding)
 
         self._do_chown_and_chmod(self.baseFilename)
 
         return stream
+
+    @contextmanager
+    def _alter_umask(self):
+        """Temporarily alter umask to custom setting, if applicable"""
+        if self.umask is None:
+            yield  # nothing to do
+        else:
+            prev_umask = os.umask(self.umask)
+            try:
+                yield
+            finally:
+                os.umask(prev_umask)
 
     def _close(self):
         """ Close file stream.  Unlike close(), we don't tear anything down, we
@@ -277,7 +312,6 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
 
             finally:
                 self._do_unlock()
-
         except Exception:
             self.handleError(record)
 
@@ -298,6 +332,7 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         return
 
     def _do_lock(self):
+        self._open_lockfile()
         if self.stream_lock:
             lock(self.stream_lock, LOCK_EX)
         else:
@@ -306,6 +341,8 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
     def _do_unlock(self):
         if self.stream_lock:
             unlock(self.stream_lock)
+            self.stream_lock.close()
+            self.stream_lock = None
         else:
             self._console_log("No self.stream_lock to unlock", stack=True)
 
@@ -315,12 +352,6 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
         self._console_log("In close()", stack=True)
         try:
             self._close()
-
-            if self.stream_lock:
-                unlock(self.stream_lock)
-                self.stream_lock.close()
-                self.stream_lock = None
-
         finally:
             super(ConcurrentRotatingFileHandler, self).close()
 
@@ -429,14 +460,19 @@ class ConcurrentRotatingFileHandler(BaseRotatingHandler):
             self._console_log("#no gzip available", stack=False)
             return
         out_filename = input_filename + ".gz"
-        # TODO: we probably need to buffer large files here to avoid memory problems
+
         with open(input_filename, "rb") as input_fh:
             with gzip.open(out_filename, "wb") as gzip_fh:
-                gzip_fh.write(input_fh.read())
+                while True:
+                    data = input_fh.read(self.gzip_buffer)
+                    if not data:
+                        break
+                    gzip_fh.write(data)
+
         os.remove(input_filename)
         self._console_log("#gzipped: %s" % (out_filename,), stack=False)
         return
-    
+
     def _do_chown_and_chmod(self, filename):
         if self._set_uid and self._set_gid:
             os.chown(filename, self._set_uid, self._set_gid)

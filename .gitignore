@@ -11,5 +11,6 @@ env
 venv
 env_py27
 *.egg-info
-*.log*
 *.lock
+*.log*
+.__*.lock

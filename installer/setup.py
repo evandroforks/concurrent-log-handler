@@ -298,15 +298,6 @@ setup(name='concurrent-log-handler',
       author_email="planders@gmail.com",
       packages=['concurrent_log_handler'],
       package_dir={'': 'all', },
-      # These aren't needed by the end user and shouldn't be installed to the Python root.
-      data_files=[
-          ("", ["LICENSE"]),
-          ('tests', ["stresstest.py"]),
-          ('docs', [
-              'README.md',
-              'LICENSE',
-          ]),
-      ],
       url="https://github.com/Preston-Landers/concurrent-log-handler",
       license="http://www.apache.org/licenses/LICENSE-2.0",
       description=doc.pop(0),
